@@ -1,0 +1,260 @@
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Para ti Estefanía</title>
+  <style>
+    /* Estilos generales para body y fondo */
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+      /* Fondo inicial: se usará el de step1 */
+      background: url('foto3.jpg') no-repeat center center;
+      background-size: cover;
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 1s ease; /* Transición suave al cambiar el fondo */
+      position: relative;
+    }
+    /* Overlay para el fondo */
+    .overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.4);  /* Cambia el color y la opacidad a tu gusto */
+      z-index: 1;
+      pointer-events: none; /* Para que los clics pasen al contenido */
+    }
+    /* Contenedor principal, se posiciona sobre el overlay */
+    .container {
+      background: rgba(255, 255, 255, 0.9);
+      padding: 20px 30px;
+      border-radius: 10px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      text-align: center;
+      position: relative;
+      z-index: 2; /* Se asegura que esté por encima del overlay */
+      min-width: 300px;
+    }
+    /* Cada "paso" está en un div con la clase step */
+    .step {
+      opacity: 0;
+      display: none;
+      transition: opacity 1s ease;
+    }
+    .step.active {
+      display: block;
+      opacity: 1;
+    }
+    /* Botones e inputs */
+    button {
+      margin: 10px;
+      padding: 10px 20px;
+      background-color: #e91e63;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background 0.3s;
+      position: relative;
+    }
+    button:hover {
+      background-color: #d81b60;
+    }
+    input[type="text"] {
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      width: 80%;
+      margin-bottom: 10px;
+    }
+    p.message {
+      margin-top: 20px;
+      font-size: 1.2em;
+      color: #333;
+    }
+    /* Clases para animación de aparición/desaparición */
+    .fade-in {
+      animation: fadeIn 1s forwards;
+    }
+    .fade-out {
+      animation: fadeOut 1s forwards;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+    @keyframes fadeOut {
+      from { opacity: 1; }
+      to { opacity: 0; }
+    }
+  </style>
+</head>
+<body>
+  <!-- Overlay que cubre todo el fondo -->
+  <div class="overlay"></div>
+
+  <div class="container">
+    <!-- Paso 1: Preguntar el nombre -->
+    <div id="step1" class="step active">
+      <h2>¿Cómo te llamas?</h2>
+      <input type="text" id="nameInput" placeholder="Tu nombre" />
+      <br />
+      <button id="nameSubmit">Enviar</button>
+      <p id="nameError" style="color: red; display: none;">Ni te topo, pa, rúmbale.</p>
+    </div>
+
+    <!-- Paso 2: ¿Me amas? -->
+    <div id="step2" class="step">
+      <h2>¿Me Amas?</h2>
+      <button id="ocupadaBtn">No, te odio</button>
+      <button id="nadaBtn">NO</button>
+    </div>
+
+    <!-- Paso 3: Preguntar sobre lo bonita que es -->
+    <div id="step3" class="step">
+      <h2>¿Alguna vez te han dicho que eres muy bonita, hermosa, guapa?</h2>
+      <button id="bonitaSi">Sí</button>
+      <button id="bonitaNo">No</button>
+      <p id="bonitaMsg" class="message"></p>
+    </div>
+
+    <!-- Paso 4: Pregunta final -->
+    <div id="step4" class="step">
+      <h2>Con el respeto que mereces, y con miedo, quisiera saber</h2>
+      <!-- Después de 5 segundos se mostrará la siguiente pregunta y botones -->
+      <div id="finalQuestion" style="display: none;">
+        <h2>¿Quieres ser Mi Novia?</h2>
+        <button id="finalSi">Si</button>
+        <button id="finalNo">No</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Mapeo de pasos a imágenes de fondo
+    const backgrounds = {
+      "step1": "foto3.jpg",
+      "step2": "foto2.jpg",
+      "step3": "foto5.jpg",
+      "step4": "foto6.jpg"
+    };
+
+    // Función para actualizar la imagen de fondo según el paso
+    function updateBackground(stepId) {
+      if (backgrounds[stepId]) {
+        document.body.style.background = "url('" + backgrounds[stepId] + "') no-repeat center center";
+        document.body.style.backgroundSize = "cover";
+      }
+    }
+
+    // Función para hacer la transición (desvanecer salida e ingresar siguiente div)
+    function transitionStep(currentId, nextId) {
+      const currentStep = document.getElementById(currentId);
+      const nextStep = document.getElementById(nextId);
+      currentStep.classList.add("fade-out");
+      setTimeout(() => {
+        currentStep.classList.remove("active", "fade-out");
+        nextStep.classList.add("active", "fade-in");
+        updateBackground(nextId);  // Actualiza el fondo al siguiente paso
+        setTimeout(() => {
+          nextStep.classList.remove("fade-in");
+        }, 1000);
+      }, 1000);
+    }
+
+    /* Paso 1: Validar el nombre */
+    document.getElementById("nameSubmit").addEventListener("click", function () {
+      const nameInput = document.getElementById("nameInput").value;
+      const nameError = document.getElementById("nameError");
+      if ((nameInput === "Estef") || (nameInput === "Estefania") || (nameInput === "Estefanía") || (nameInput === "estefanía") || (nameInput === "estefania") || (nameInput === "Diana")) {
+        transitionStep("step1", "step2");
+      } else {
+        nameError.style.display = "block";
+      }
+    });
+
+    /* Paso 2: ¿Me Amas? */
+    const ocupadaBtn = document.getElementById("ocupadaBtn");
+    const nadaBtn = document.getElementById("nadaBtn");
+
+    // Función para reposicionar un botón aleatoriamente dentro del contenedor
+    function repositionButton(btn) {
+      const container = document.querySelector(".container");
+      const containerRect = container.getBoundingClientRect();
+      const btnRect = btn.getBoundingClientRect();
+      const maxLeft = containerRect.width - btnRect.width;
+      const maxTop = containerRect.height - btnRect.height;
+      const randomLeft = Math.floor(Math.random() * maxLeft);
+      const randomTop = Math.floor(Math.random() * maxTop);
+      btn.style.position = "absolute";
+      btn.style.left = randomLeft + "px";
+      btn.style.top = randomTop + "px";
+    }
+
+    // Si se pulsa "Estaré ocupada", el botón se mueve (nunca se podrá hacer clic realmente)
+    ocupadaBtn.addEventListener("click", function () {
+      repositionButton(ocupadaBtn);
+    });
+
+    // Si se pulsa "No haré nada", se pasa al siguiente paso
+    nadaBtn.addEventListener("click", function () {
+      transitionStep("step2", "step3");
+    });
+
+    /* Paso 3: Preguntar sobre lo bonita que es */
+    const bonitaSi = document.getElementById("bonitaSi");
+    const bonitaNo = document.getElementById("bonitaNo");
+    const bonitaMsg = document.getElementById("bonitaMsg");
+
+    function goToStep4() {
+      transitionStep("step3", "step4");
+      // Iniciar animación del mensaje final una vez mostrado el div del paso 4
+      setTimeout(startFinalAnimation, 1000);
+    }
+
+    bonitaSi.addEventListener("click", function () {
+      bonitaMsg.textContent = "Claro, yo te lo dije mi preciosa";
+      setTimeout(goToStep4, 2000);
+    });
+
+    bonitaNo.addEventListener("click", function () {
+      bonitaMsg.textContent = "Deberías verte en el reflejo de mis pupilas que se dilatan al verte";
+      setTimeout(goToStep4, 2000);
+    });
+
+    /* Paso 4: Pregunta final */
+    function startFinalAnimation() {
+      const finalQuestionDiv = document.getElementById("finalQuestion");
+      // Después de 5 segundos se muestra la pregunta final con animación
+      setTimeout(() => {
+        finalQuestionDiv.style.display = "block";
+        finalQuestionDiv.classList.add("fade-in");
+        setTimeout(() => {
+          finalQuestionDiv.classList.remove("fade-in");
+        }, 1000);
+      }, 5000);
+    }
+
+    // Botones de la pregunta final
+    const finalSi = document.getElementById("finalSi");
+    const finalNo = document.getElementById("finalNo");
+
+    // Si se pulsa "No", el botón se reposiciona para que no se pueda hacer clic
+    finalNo.addEventListener("click", function () {
+      repositionButton(finalNo);
+    });
+
+    // Si se pulsa "Si", se redirige a WhatsApp con un mensaje predeterminado
+    finalSi.addEventListener("click", function () {
+      const mensaje = encodeURIComponent("Hola, acepto ser tu novia:)");
+      window.location.href = "https://wa.link/xj4y2n";
+    });
+  </script>
+</body>
+</html>
